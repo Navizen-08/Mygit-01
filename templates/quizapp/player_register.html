@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Player Register{% endblock %}
+
+{% block content %}
+  <h2>Player Registration</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <label>Username</label>
+      {{ form.username }}
+    </div>
+    <div class="form-row">
+      <label>Email</label>
+      {{ form.email }}
+    </div>
+    <div class="form-row">
+      <label>Password</label>
+      {{ form.password }}
+    </div>
+    <div class="form-row">
+      <label>Display name</label>
+      {{ form.display_name }}
+    </div>
+    <button type="submit" class="btn">Register</button>
+  </form>
+  <p>Already registered? <a href="{% url 'quizapp:player_login' %}">Login</a></p>
+{% endblock %}

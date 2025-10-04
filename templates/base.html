@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Quiz App{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Quiz</h1>
+    </header>
+    <main>
+      {% if messages %}
+        <ul class="messages">
+        {% for m in messages %}
+          <li class="{{ m.tags }}">{{ m }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+      <small>© Quiz App</small>
+    </footer>
+  </div>
+</body>
+</html>

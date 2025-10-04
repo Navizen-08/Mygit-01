@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block content %} <br><br>
+    <a href="{% url 'quizapp:admin_login' %}" class="ur_l">Admin</a>
+    <a href="{% url 'quizapp:player_login' %}" class="ur_l">Player</a>
+{% endblock %}

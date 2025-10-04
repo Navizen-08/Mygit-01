@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz{% endblock %}
+
+{% block content %}
+  <h2>Quiz</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% for q in questions %}
+      <fieldset class="question">
+        <legend>{{ forloop.counter }}. {{ q.text }}</legend>
+        <label><input type="radio" name="question_{{ q.id }}" value="A"> A. {{ q.option_a }}</label><br>
+        <label><input type="radio" name="question_{{ q.id }}" value="B"> B. {{ q.option_b }}</label><br>
+        {% if q.option_c %}<label><input type="radio" name="question_{{ q.id }}" value="C"> C. {{ q.option_c }}</label><br>{% endif %}
+        {% if q.option_d %}<label><input type="radio" name="question_{{ q.id }}" value="D"> D. {{ q.option_d }}</label><br>{% endif %}
+      </fieldset>
+    {% empty %}
+      <p>No questions available.</p>
+    {% endfor %}
+    <button class="btn" type="submit">Submit</button>
+  </form>
+{% endblock %}

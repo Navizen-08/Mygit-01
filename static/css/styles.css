@@ -1,0 +1,57 @@
+body {
+  background: #fff;
+  color: #2b2b2b;
+  font-family: Arial, sans-serif;
+}
+.container {
+  max-width: 900px;
+  margin: 24px auto;
+  background: #ffffff;
+  border: 6px solid #e6e0f8; /* light lavender border */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(230,224,248,0.35);
+  margin-top: 150px;
+}
+header h1 {
+  margin: 0 0 12px 0;
+  color: #5b3fa3; /* darker lavender */
+  text-align: center;
+}
+h2 { color: #6e4fb8; }
+.form-row { margin-bottom: 12px; }
+.form-row label { display:block; font-weight:600; margin-bottom:4px; }
+input[type="text"], input[type="password"], input[type="email"], select, textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.btn {
+  display:inline-block;
+  background: #bfa6ff; /* lavender button */
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+.btn:hover { background: #9f7bff; }
+.question { margin-bottom: 14px; padding: 10px; border-radius:6px; background: #fbf9ff; border:1px solid #efeaff; }
+.messages { list-style:none; padding:0; margin:8px 0; }
+.messages li { padding:8px; border-radius:4px; margin-bottom:6px; background:#f2eefe; color:#3d2f6b; }
+footer { text-align:center; color:#888; margin-top:12px; }
+
+.ur_l{
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  border: 6px solid #e6e0f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(230,224,248,0.35);
+  width: fit-content;
+  margin-left: 400px;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
