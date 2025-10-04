@@ -5,7 +5,7 @@
 <h2>Question Bank</h2>
 <table class="questions-table">
   <thead>
-    <tr>
+      <td colspan="9">No questions found.</td>
       <th>#</th>
       <th>Question</th>
       <th>Option A</th>
@@ -13,18 +13,19 @@
       <th>Option C</th>
       <th>Option D</th>
       <th>Correct</th>
-      <th>Actions</th>
-      <th class='nun'></th>
+      <th>Correct</th>
+      <th colspan="2">Actions</th>
+    </tr>
     </tr>
   </thead>
   <tbody>
     {% for question in questions %}
     <tr>
       <td>{{ question.pk }}</td>
-      <td>{{ question.text }}</td>
-      <td>{{ question.option_a }}</td>
-      <td>{{ question.option_b }}</td>
+      <td>{{ question.option_a|default:"-" }}</td>
+      <td>{{ question.option_b|default:"-" }}</td>
       <td>{{ question.option_c|default:"-" }}</td>
+      <td>{{ question.option_d|default:"-" }}</td>
       <td>{{ question.option_d|default:"-" }}</td>
       <td>{{ question.correct }}</td>
       <td>
@@ -40,6 +41,6 @@
   </tbody>
 </table>
 
-<a href="{% url 'quizapp:add_question' %}" class="btn-add">Add New Question</a>
+<a href="{% url 'quizapp:home' %}" class="btn-add">Back to Home</a>
 <a href="{% url 'quizapp:home' %}" class="btn-add">Logout</a>
 {% endblock %}

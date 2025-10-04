@@ -26,5 +26,5 @@
       Percentage: {{ percentage }}%
     {% endblocktrans %}
   </p>
-  <a href="{% url 'quizapp:home' %}" class="btn-add">Logout</a>
+  <a href="{% url 'quizapp:logout' %}" class="btn-add">{% trans "Logout" %}</a>
 {% endblock %}

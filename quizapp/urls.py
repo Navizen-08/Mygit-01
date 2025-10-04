@@ -15,5 +15,4 @@ urlpatterns = [
     path('editquest/<int:pk>', views.edit_question, name='edit_question'),
     path('deletequest/<int:pk>', views.delete_question, name='delete_question'),
     path('viewquest/', views.questions_list, name='questions_list'),
-    
 ]

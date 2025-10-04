@@ -52,6 +52,9 @@ def admin_login(request):
 
 @login_required(login_url= reverse_lazy('quizapp:admin-login'))
 def admin_home(request):
+    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
+        messages.error(request, "Only admins can access this page.")
+        return redirect('quizapp:homepage')
     return render(request, 'quizapp/admin_home.html')
 
 @login_required(login_url= reverse_lazy('quizapp:admin-login'))
@@ -65,10 +68,13 @@ def addQuest(request):
             form.save()
             return redirect('quizapp:questions_list')  # redirect after saving
     else:
-        form = QuestionForm()
-    return render(request, 'quizapp/add_question.html', {'form': form})
-
 @login_required(login_url= reverse_lazy('quizapp:admin-login'))
+def questions_list(request):
+    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
+        messages.error(request, "Only admins can view the questions list.")
+        return redirect('quizapp:homepage')
+    questions = Question.objects.all().order_by('id')  # order by id, or you can use '-id' for latest first
+    return render(request, 'quizapp/questions_list.html', {'questions': questions})
 def questions_list(request):
     questions = Question.objects.all().order_by('id')  # order by id, or you can use '-id' for latest first
     return render(request, 'quizapp/questions_list.html', {'questions': questions})

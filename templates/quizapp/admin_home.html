@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Quiz App{% endblock %}</title>
@@ -17,7 +17,7 @@
       <nav class="navbar">
         <ul class="nav-list">
           <li><a href="{% url 'quizapp:add_question' %}">Add Question</a></li>
-          <li>Edit Question</li>
+          <li><a href="{% url 'quizapp:edit_question' %}"></a>Edit Question</a></li>
           <li><a href="{% url 'quizapp:questions_list' %}">Question Bank</a></li>
         </ul>
       </nav>

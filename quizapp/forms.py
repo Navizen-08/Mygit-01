@@ -46,3 +46,21 @@ class QuestionForm(forms.ModelForm):
             'option_d': forms.TextInput(attrs={'placeholder': 'Option D (optional)'}),
             'correct': forms.Select(attrs={'class': 'form-select'}),
         }
+
+
+        def clean(self):
+            cleaned_data = super().clean()
+            correct = cleaned_data.get('correct')
+            
+            if correct:
+                option_field = f'option_{correct.lower()}'
+                option_value = cleaned_data.get(option_field)
+                
+                if not option_value or not option_value.strip():
+                    raise forms.ValidationError(
+                        f"The correct answer is set to '{correct}', but that option is empty. "
+                        f"Please provide text for option {correct} or select a different correct answer."
+                    )
+            
+            return cleaned_data
+
