@@ -7,7 +7,13 @@ urlpatterns = [
     path('register/', views.player_register, name='player_register'),
     path('player-login/', views.player_login, name='player_login'),
     path('admin-login/', views.admin_login, name='admin_login'),
+    path('admin-home/', views.admin_home, name='admin-home'),
     path('common/', views.player_common, name='player_common'),
     path('quiz/', views.quiz_page, name='quiz_page'),
     path('logout/', views.user_logout, name='logout'),
+    path('addquest/', views.addQuest, name='add_question'),
+    path('editquest/<int:pk>', views.edit_question, name='edit_question'),
+    path('deletequest/<int:pk>', views.delete_question, name='delete_question'),
+    path('viewquest/', views.questions_list, name='questions_list'),
+    
 ]

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Add Question{% endblock %}
+
+{% block content %}
+<h2>Add New Question</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}  {# renders form fields with <p> wrapping #}
+    <button type="submit">Save</button>
+    <a href="{% url 'quizapp:questions_list' %}">Cancel</a>
+</form>
+{% endblock %}

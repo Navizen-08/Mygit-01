@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Player
+from .models import Player, Question
 
 class PlayerRegistrationForm(forms.ModelForm):
     # ModelForm for Player and related User fields
@@ -31,3 +31,18 @@ class PlayerRegistrationForm(forms.ModelForm):
         if commit:
             player.save()
         return player
+
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text', 'option_a', 'option_b', 'option_c', 'option_d', 'correct']
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter your question here'}),
+            'option_a': forms.TextInput(attrs={'placeholder': 'Option A'}),
+            'option_b': forms.TextInput(attrs={'placeholder': 'Option B'}),
+            'option_c': forms.TextInput(attrs={'placeholder': 'Option C (optional)'}),
+            'option_d': forms.TextInput(attrs={'placeholder': 'Option D (optional)'}),
+            'correct': forms.Select(attrs={'class': 'form-select'}),
+        }

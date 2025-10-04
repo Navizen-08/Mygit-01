@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Quiz Result" %}{% endblock %}
+
+{% block content %}
+  <h2>{% trans "Quiz Result" %}</h2>
+
+  <p>{% blocktrans with total_questions=total %}Total questions: {{ total_questions }}{% endblocktrans %}</p>
+
+  <p>
+    {% blocktrans with attempted=attempted not_attempted=not_attempted %}
+      Attempted: {{ attempted }} | Not Attempted: {{ not_attempted }}
+    {% endblocktrans %}
+  </p>
+
+  <h3>
+    {% blocktrans with user_score=score total_questions=total %}
+      Your score: {{ user_score }} out of {{ total_questions }}
+    {% endblocktrans %}
+  </h3>
+
+  <p>
+    {% blocktrans with percentage=percentage %}
+      Percentage: {{ percentage }}%
+    {% endblocktrans %}
+  </p>
+  <a href="{% url 'quizapp:home' %}" class="btn-add">Logout</a>
+{% endblock %}
