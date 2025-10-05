@@ -3,6 +3,7 @@ body {
   color: #2b2b2b;
   font-family: Arial, sans-serif;
 }
+
 .container {
   max-width: 900px;
   margin: 24px auto;
@@ -13,20 +14,26 @@ body {
   box-shadow: 0 4px 10px rgba(230,224,248,0.35);
   margin-top: 150px;
 }
+
 header h1 {
   margin: 0 0 12px 0;
   color: #5b3fa3; /* darker lavender */
   text-align: center;
 }
+
 h2 { color: #6e4fb8; }
+
 .form-row { margin-bottom: 12px; }
+
 .form-row label { display:block; font-weight:600; margin-bottom:4px; }
+
 input[type="text"], input[type="password"], input[type="email"], select, textarea {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
+
 .btn {
   display:inline-block;
   background: #bfa6ff; /* lavender button */
@@ -37,10 +44,15 @@ input[type="text"], input[type="password"], input[type="email"], select, textare
   border: none;
   cursor: pointer;
 }
+
 .btn:hover { background: #9f7bff; }
+
 .question { margin-bottom: 14px; padding: 10px; border-radius:6px; background: #fbf9ff; border:1px solid #efeaff; }
+
 .messages { list-style:none; padding:0; margin:8px 0; }
-.messages li { padding:8px; border-radius:4px; margin-bottom:6px; background:#f2eefe; color:#3d2f6b; text-align: center;}
+
+.messages li { padding:8px; border-radius:4px; margin-bottom:6px; background:#f2eefe; color:#3d2f6b; }
+
 footer { text-align:center; color:#888; margin-top:12px; }
 
 .ur_l{
@@ -131,7 +143,15 @@ a.btn.btn-cancel {
 a.btn.btn-cancel:hover {
   background: #5a6268;
 }
+
 /* question_list.html */
+
+/* Responsive wrapper for table */
+.questions-table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* horizontal scroll for small screens */
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Table styling for question list */
 .questions-table {
@@ -142,12 +162,14 @@ a.btn.btn-cancel:hover {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   border-radius: 8px;
   overflow: hidden;
+  min-width: 600px; /* prevents extreme shrinking */
 }
 
 .questions-table th, .questions-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  font-size: 16px;
 }
 
 .questions-table th {
@@ -203,6 +225,7 @@ a.btn.btn-cancel:hover {
 .btn-add:hover {
   background-color: #0056b3;
 }
+
 /* delete_confirmation.html */
 
 .delete-card {
@@ -223,4 +246,47 @@ a.btn.btn-cancel:hover {
 
 .delete-card .btn-delete {
   margin-right: 10px;
+}
+
+/* Responsive adjustments for screens <= 768px */
+@media (max-width: 768px) {
+  .questions-table th,
+  .questions-table td {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}
+
+/* Stack table rows on very small screens <= 480px */
+@media (max-width: 480px) {
+  .questions-table,
+  .questions-table thead,
+  .questions-table tbody,
+  .questions-table th,
+  .questions-table td,
+  .questions-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .questions-table thead tr {
+    display: none; /* hide headers */
+  }
+
+  .questions-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    white-space: normal;
+  }
+
+  .questions-table td::before {
+    content: attr(data-label); /* show column label */
+    position: absolute;
+    left: 12px;
+    width: 45%;
+    padding-right: 10px;
+    font-weight: 600;
+    text-align: left;
+  }
 }

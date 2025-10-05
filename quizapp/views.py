@@ -112,10 +112,6 @@ class QuestionCreateView(AdminRequiredMixin, CreateView):
     template_name = 'quizapp/add_question.html'
     success_url = reverse_lazy('quizapp:questions_list')
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "Question deleted successfully!")
-        return super().delete(request, *args, **kwargs)
-
 
 class QuestionUpdateView(AdminRequiredMixin, UpdateView):
     model = Question

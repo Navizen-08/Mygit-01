@@ -4,46 +4,48 @@
 {% block content %}
   <h2>Question Bank</h2><br>
 
-  <table class="questions-table">
-    <thead>
-      <tr>
-        <th>Q.No.</th>
-        <th>Question</th>
-        <th>Option-A</th>
-        <th>Option-B</th>
-        <th>Option-C</th>
-        <th>Option-D</th>
-        <th>Correct</th>
-        <th colspan="2" style="text-align: center;">Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {% if questions %}
-        {% for question in questions %}
-          <tr>
-            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-            <td>{{ question.text }}</td>
-            <td>{{ question.option_a|default:"-" }}</td>
-            <td>{{ question.option_b|default:"-" }}</td>
-            <td>{{ question.option_c|default:"-" }}</td>
-            <td>{{ question.option_d|default:"-" }}</td>
-            <td>{{ question.correct }}</td>
-            <td>
-              <a href="{% url 'quizapp:edit_question' question.pk %}" class="btn-edit">Edit</a>
-            </td>
-            <td>
-              <a href="{% url 'quizapp:delete_question' question.pk %}" class="btn-delete">Delete</a>
-            </td>
-          </tr>
-        {% endfor %}
-      {% else %}
+  <div class="questions-table-wrapper">
+    <table class="questions-table">
+      <thead>
         <tr>
-          <td colspan="9" class="no-data">No questions found.</td>
+          <th>Q.No.</th>
+          <th>Question</th>
+          <th>Option-A</th>
+          <th>Option-B</th>
+          <th>Option-C</th>
+          <th>Option-D</th>
+          <th>Correct</th>
+          <th colspan="2" style="text-align: center;">Actions</th>
         </tr>
-      {% endif %}
-    </tbody>
-  </table>
+      </thead>
+
+      <tbody>
+        {% if questions %}
+          {% for question in questions %}
+            <tr>
+              <td data-label="Q.No.">{{ page_obj.start_index|add:forloop.counter0 }}</td>
+              <td data-label="Question">{{ question.text }}</td>
+              <td data-label="Option-A">{{ question.option_a|default:"-" }}</td>
+              <td data-label="Option-B">{{ question.option_b|default:"-" }}</td>
+              <td data-label="Option-C">{{ question.option_c|default:"-" }}</td>
+              <td data-label="Option-D">{{ question.option_d|default:"-" }}</td>
+              <td data-label="Correct">{{ question.correct }}</td>
+              <td data-label="Edit">
+                <a href="{% url 'quizapp:edit_question' question.pk %}" class="btn-edit">Edit</a>
+              </td>
+              <td data-label="Delete">
+                <a href="{% url 'quizapp:delete_question' question.pk %}" class="btn-delete">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="9" class="no-data">No questions found.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 
   {% if is_paginated %}
     <div class="pagination">
