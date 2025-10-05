@@ -12,10 +12,11 @@
       <h1>Quiz</h1>
     </header>
     <main>
+      <br>
       {% if messages %}
         <ul class="messages">
         {% for m in messages %}
-          <li class="{{ m.tags }}">{{ m }}</li>
+          <li class="{{ m.tags }}" style="text-align: center;">{{ m }}</li>
         {% endfor %}
         </ul>
       {% endif %}

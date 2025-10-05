@@ -17,7 +17,6 @@
       <nav class="navbar">
         <ul class="nav-list">
           <li><a href="{% url 'quizapp:add_question' %}">Add Question</a></li>
-          <li><a href="{% url 'quizapp:edit_question' %}"></a>Edit Question</a></li>
           <li><a href="{% url 'quizapp:questions_list' %}">Question Bank</a></li>
         </ul>
       </nav>
@@ -33,7 +32,7 @@
       {% endif %}
       {% block content %}{% endblock %}
     </main>
-
+    <a href="{% url 'quizapp:logout' %}" class="btn-add">Logout</a>
     <footer>
       <small>© Quiz App</small>
     </footer>

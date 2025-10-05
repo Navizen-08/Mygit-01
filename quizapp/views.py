@@ -1,124 +1,175 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from .forms import PlayerRegistrationForm, QuestionForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
+from django.views.generic import (
+    TemplateView, FormView, CreateView, UpdateView, DeleteView, ListView, View
+)
+from .forms import PlayerRegistrationForm, QuestionForm
 from .models import Question
 
-def homepage(request):
-    return render(request, 'quizapp/home_page.html'
-    )
-def player_register(request):
-    if request.method == 'POST':
-        form = PlayerRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Registration complete. Please login.")
-            return redirect('quizapp:player_login')
-    else:
-        form = PlayerRegistrationForm()
-    return render(request, 'quizapp/player_register.html', {'form': form})
 
-def player_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            # ensure user has a player profile
-            if hasattr(user, 'player_profile'):
-                login(request, user)
-                return redirect('quizapp:player_common')
-            else:
-                messages.error(request, "This account is not a player.")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'quizapp/player_login.html', {'form': form})
+# ---------------------- Mixins ----------------------
 
-def admin_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            if user.is_staff or hasattr(user, 'admin_profile'):
-                login(request, user)
-                return redirect('quizapp:admin-home')  # redirect to Django admin or custom admin area
-            else:
-                messages.error(request, "Not an admin account")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'quizapp/admin_login.html', {'form': form})
+class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Restricts access to admin/staff users."""
+    login_url = reverse_lazy('quizapp:admin_login')
 
-@login_required(login_url= reverse_lazy('quizapp:admin-login'))
-def admin_home(request):
-    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
-        messages.error(request, "Only admins can access this page.")
+    def test_func(self):
+        user = self.request.user
+        return user.is_authenticated and (user.is_staff or hasattr(user, 'admin_profile'))
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Only admins can access this page.")
         return redirect('quizapp:homepage')
-    return render(request, 'quizapp/admin_home.html')
 
-@login_required(login_url= reverse_lazy('quizapp:admin-login'))
-def addQuest(request):
-    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
-        messages.error(request, "Only admins can add questions.")
+
+class PlayerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Restricts access to registered players."""
+    login_url = reverse_lazy('quizapp:player_login')
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_authenticated and hasattr(user, 'player_profile')
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Only players can access this page.")
         return redirect('quizapp:homepage')
-    if request.method == "POST":
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('quizapp:questions_list')  # redirect after saving
-    else:
-@login_required(login_url= reverse_lazy('quizapp:admin-login'))
-def questions_list(request):
-    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
-        messages.error(request, "Only admins can view the questions list.")
-        return redirect('quizapp:homepage')
-    questions = Question.objects.all().order_by('id')  # order by id, or you can use '-id' for latest first
-    return render(request, 'quizapp/questions_list.html', {'questions': questions})
-def questions_list(request):
-    questions = Question.objects.all().order_by('id')  # order by id, or you can use '-id' for latest first
-    return render(request, 'quizapp/questions_list.html', {'questions': questions})
 
-@login_required(login_url= reverse_lazy('quizapp:admin-login'))
-def edit_question(request, pk):
-    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
-        messages.error(request, "Only admins can modify questions.")
-        return redirect('quizapp:homepage')
-    question = get_object_or_404(Question, pk=pk)
-    if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Question updated successfully!')
-            return redirect('quizapp:questions_list')
-    else:
-        form = QuestionForm(instance=question)
-    return render(request, 'quizapp/add_question.html', {'form': form})
 
-@login_required(login_url= reverse_lazy('quizapp:admin-login'))
-def delete_question(request, pk):
-    if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
-        messages.error(request, "Only admins can delete questions.")
-        return redirect('quizapp:homepage')
-    question = get_object_or_404(Question, pk=pk)
-    if request.method == 'POST':
-        question.delete()
-        messages.success(request, 'Question deleted successfully!')
-        return redirect('quizapp:questions_list')
-    return render(request, 'quizapp/delete_confirmation.html', {'object': question})
+# ---------------------- Common / Home ----------------------
 
-@login_required(login_url= reverse_lazy('quizapp:player-login'))
-def player_common(request):
-    # simple common page for players - links to quiz or logout
-    return render(request, 'quizapp/player_common.html')
+class HomePageView(TemplateView):
+    template_name = 'quizapp/home_page.html'
 
-@login_required(login_url= reverse_lazy('quizapp:player-login'))
-def quiz_page(request):
-    # very simple quiz page that lists questions
-    questions = Question.objects.all()[:5]  # First 5 questions
-    total_questions = len(questions)
-    
-    if request.method == 'POST':
+    def get(self, request, *args, **kwargs):
+        if hasattr(request.user, 'admin_profile') or request.user.is_staff:
+            return redirect('quizapp:admin_home')
+        elif hasattr(request.user, 'player_profile'):
+            return redirect('quizapp:player_common')
+        return super().get(request, *args, **kwargs)
+
+
+
+# ---------------------- Player Auth ----------------------
+
+class PlayerRegisterView(FormView):
+    template_name = 'quizapp/player_register.html'
+    form_class = PlayerRegistrationForm
+    success_url = reverse_lazy('quizapp:player_login')
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Registration complete. Please login.")
+        return super().form_valid(form)
+
+
+class PlayerLoginView(FormView):
+    template_name = 'quizapp/player_login.html'
+    form_class = AuthenticationForm
+
+    def form_valid(self, form):
+        user = form.get_user()
+        if hasattr(user, 'player_profile'):
+            login(self.request, user)
+            return redirect('quizapp:player_common')
+        messages.error(self.request, "This account is not a player.")
+        return self.form_invalid(form)
+
+
+class AdminLoginView(FormView):
+    template_name = 'quizapp/admin_login.html'
+    form_class = AuthenticationForm
+
+    def form_valid(self, form):
+        user = form.get_user()
+        if user.is_staff or hasattr(user, 'admin_profile'):
+            login(self.request, user)
+            return redirect('quizapp:admin_home')
+        messages.error(self.request, "Not an admin account.")
+        return self.form_invalid(form)
+
+
+# ---------------------- Admin Section ----------------------
+
+class AdminHomeView(AdminRequiredMixin, TemplateView):
+    template_name = 'quizapp/admin_home.html'
+
+
+class QuestionListView(AdminRequiredMixin, ListView):
+    model = Question
+    template_name = 'quizapp/questions_list.html'
+    context_object_name = 'questions'
+    ordering = ['id']
+    paginate_by = 3
+
+
+class QuestionCreateView(AdminRequiredMixin, CreateView):
+    model = Question
+    form_class = QuestionForm
+    template_name = 'quizapp/add_question.html'
+    success_url = reverse_lazy('quizapp:questions_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
+            messages.error(request, "Unauthorized access.")
+            return redirect('quizapp:homepage')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Question added successfully!")
+        return super().form_valid(form)
+
+
+class QuestionUpdateView(AdminRequiredMixin, UpdateView):
+    model = Question
+    form_class = QuestionForm
+    template_name = 'quizapp/add_question.html'
+    success_url = reverse_lazy('quizapp:questions_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
+            messages.error(request, "Unauthorized access.")
+            return redirect('quizapp:homepage')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Question updated successfully!")
+        return super().form_valid(form)
+
+
+class QuestionDeleteView(AdminRequiredMixin, DeleteView):
+    model = Question
+    template_name = 'quizapp/delete_confirmation.html'
+    success_url = reverse_lazy('quizapp:questions_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
+            messages.error(request, "Unauthorized access.")
+            return redirect('quizapp:homepage')
+        return super().dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Question deleted successfully!")
+        return super().delete(request, *args, **kwargs)
+
+
+# ---------------------- Player Section ----------------------
+
+class PlayerCommonView(PlayerRequiredMixin, TemplateView):
+    template_name = 'quizapp/player_common.html'
+
+
+class QuizPageView(PlayerRequiredMixin, View):
+    def get(self, request):
+        questions = Question.objects.all()[:5]
+        return render(request, 'quizapp/quiz_page.html', {'questions': questions})
+
+    def post(self, request):
+        questions = Question.objects.all()[:5]
+        total_questions = len(questions)
         score = 0
         attempted = 0
 
@@ -132,16 +183,21 @@ def quiz_page(request):
         not_attempted = total_questions - attempted
         percentage = round((score / total_questions) * 100, 2) if total_questions > 0 else 0
 
-        return render(request, 'quizapp/quiz_result.html', {
+        context = {
             'score': score,
             'total': total_questions,
             'attempted': attempted,
             'not_attempted': not_attempted,
             'percentage': percentage,
-        })
+        }
+        return render(request, 'quizapp/quiz_result.html', context)
 
-    return render(request, 'quizapp/quiz_page.html', {'questions': questions})
 
-def user_logout(request):
-    logout(request)
-    return redirect('quizapp:player_login')
+# ---------------------- Logout ----------------------
+
+class UserLogoutView(LoginRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        messages.info(request, "You have been logged out successfully.")
+        return redirect('quizapp:homepage')
+

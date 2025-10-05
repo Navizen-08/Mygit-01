@@ -40,7 +40,7 @@ input[type="text"], input[type="password"], input[type="email"], select, textare
 .btn:hover { background: #9f7bff; }
 .question { margin-bottom: 14px; padding: 10px; border-radius:6px; background: #fbf9ff; border:1px solid #efeaff; }
 .messages { list-style:none; padding:0; margin:8px 0; }
-.messages li { padding:8px; border-radius:4px; margin-bottom:6px; background:#f2eefe; color:#3d2f6b; }
+.messages li { padding:8px; border-radius:4px; margin-bottom:6px; background:#f2eefe; color:#3d2f6b; text-align: center;}
 footer { text-align:center; color:#888; margin-top:12px; }
 
 .ur_l{
