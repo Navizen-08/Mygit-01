@@ -22,7 +22,7 @@
       {% if questions %}
         {% for question in questions %}
           <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
             <td>{{ question.text }}</td>
             <td>{{ question.option_a|default:"-" }}</td>
             <td>{{ question.option_b|default:"-" }}</td>

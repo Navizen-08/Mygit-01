@@ -112,15 +112,9 @@ class QuestionCreateView(AdminRequiredMixin, CreateView):
     template_name = 'quizapp/add_question.html'
     success_url = reverse_lazy('quizapp:questions_list')
 
-    def dispatch(self, request, *args, **kwargs):
-        if not (request.user.is_staff or hasattr(request.user, 'admin_profile')):
-            messages.error(request, "Unauthorized access.")
-            return redirect('quizapp:homepage')
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        messages.success(self.request, "Question added successfully!")
-        return super().form_valid(form)
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Question deleted successfully!")
+        return super().delete(request, *args, **kwargs)
 
 
 class QuestionUpdateView(AdminRequiredMixin, UpdateView):
